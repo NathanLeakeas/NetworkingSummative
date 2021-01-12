@@ -1,6 +1,6 @@
 package Chat;
 import java.io.*;
-import java.util.ArrayList;;
+import java.util.ArrayList;
 
 public class Message implements Serializable {
     String protocol;
@@ -10,5 +10,10 @@ public class Message implements Serializable {
     {
         protocol=prot;
         argument=arg;
+    }
+
+    public String getProtocol()
+    {
+        return protocol;
     }
 }

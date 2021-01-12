@@ -1,5 +1,7 @@
 package Chat;
+
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import java.net.*;
@@ -19,10 +21,15 @@ public class ChatClient {
 
         try(Socket s = new Socket(host,port))
         {
-            Scanner fromHost = new Scanner(s.getInputStream());
-            PrintWriter toHost = new PrintWriter(s.getOutputStream());
-            toHost.print("UNAME:"+username);
-            toHost.flush();
+            //Scanner fromHost = new Scanner(s.getInputStream());
+            //PrintWriter toHost = new PrintWriter(s.getOutputStream());
+            ObjectOutputStream toHost = new ObjectOutputStream(s.getOutputStream());
+            ObjectInputStream fromHost = new ObjectInputStream(s.getInputStream());
+            ArrayList<String> loginArgs = new ArrayList<>();
+            loginArgs.add(username);
+            Message loginMessage = new Message("LOGIN",loginArgs);
+            toHost.writeObject(loginMessage);
+            
             System.out.println("Connected!");
             ChatMessageHandlerClient service = new ChatMessageHandlerClient(s);
             Thread t = new Thread(service);

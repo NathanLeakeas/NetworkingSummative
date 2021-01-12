@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.net.*;
 
 public class ChatServer {
-    public static List<Socket> sockList = Collections.synchronizedList(new ArrayList());
+    public static List<SocketInfo> sockList = Collections.synchronizedList(new ArrayList());
     
     public static void main(String[] args) throws IOException
     {
@@ -19,7 +19,8 @@ public class ChatServer {
             //{
                 Socket s = servSock.accept();
                 System.out.println("Client connected from "+s.getInetAddress());
-                sockList.add(s);
+                SocketInfo currentSocket = new SocketInfo(s);
+                sockList.add(currentSocket);
                 ChatMessageHandlerServer service = new ChatMessageHandlerServer(s,sockList);
                 Thread t = new Thread(service);
                 t.start();

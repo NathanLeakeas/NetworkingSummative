@@ -3,8 +3,8 @@ import java.net.*;
 
 public class SocketInfo {
     Socket s;
-    String uname;
-    public SocketInfo(Socket socket,String username)
+    Account uname;
+    public SocketInfo(Socket socket,Account username)
     {   
         s=socket;
         uname = username;
@@ -20,7 +20,7 @@ public class SocketInfo {
         return s;
     }
 
-    public String getUsername()
+    public Account getUsername()
     {
         return uname;
     }

@@ -2,16 +2,17 @@ package Chat;
 import java.net.*;
 import java.util.Scanner;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class ChatMessageHandlerServer implements Runnable
 {
-    Scanner fromHost;
-    PrintWriter toHost;
+    ObjectInputStream fromHost;
+    ObjectOutputStream toHost;
     Socket s;
-    List<Socket> clientList;
-    public ChatMessageHandlerServer(Socket sock, List<Socket> sockList)
+    List<SocketInfo> clientList;
+    public ChatMessageHandlerServer(Socket sock, List<SocketInfo> sockList)
     {
         s = sock;
         clientList = sockList;
@@ -21,35 +22,44 @@ public class ChatMessageHandlerServer implements Runnable
     {
             try
             {
-                fromHost = new Scanner(s.getInputStream());
-                toHost = new PrintWriter(s.getOutputStream());
+                fromHost = new ObjectInputStream(s.getInputStream());
+                toHost = new ObjectOutputStream(s.getOutputStream());
                 HandleMessages();
                 
             }
-            catch(IOException e)
+            catch(Exception e)
             {
 
             }
             
     }
 
-    public void HandleMessages() throws IOException
+    public void HandleMessages() throws IOException, ClassNotFoundException
     {
         while(true)
         {
             //if(!fromHost.hasNext()){return;}
-            String message = fromHost.nextLine();
-            //System.out.println("message: "+message);
-            for(Socket otherClient : clientList)
+            Message message = (Message)fromHost.readObject();
+            for(SocketInfo otherClient : clientList)
             {
-                if(otherClient!=s)//prevent sending message to client that sent the message
+                
+            }
+            if(message.getProtocol().compareTo("MSG")==0)
+            {
+                for(SocketInfo otherClient : clientList)
                 {
-                    PrintWriter toNewClient = new PrintWriter(otherClient.getOutputStream());
-                    toNewClient.println(""+otherClient.getInetAddress()+":"+message);
-                    toNewClient.flush();
+                    if(otherClient.getSocket()!=s)//prevent sending message to client that sent the message
+                    {   
+                        ObjectOutputStream toNewClient = new ObjectOutputStream(otherClient.getSocket().getOutputStream());
+                        ArrayList<String> messageContent = new ArrayList<>();
+                        toNewClient.writeObject(new Message("MSG",messageContent));
+                        toNewClient.flush();
+                    }
                 }
             }
-        }
+            }
+            
+            
     }
 
 }
