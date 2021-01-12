@@ -1,3 +1,9 @@
+/**
+ * Daniel Lott
+ * 1/11/2021
+ * WebGet modification
+ */
+
 import java.io.*;
 import java.net.Socket;
 import java.util.*;
