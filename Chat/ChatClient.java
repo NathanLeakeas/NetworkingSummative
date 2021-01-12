@@ -2,8 +2,6 @@ package Chat;
 import java.io.*;
 import java.util.Scanner;
 
-import jdk.nashorn.internal.ir.CatchNode;
-
 import java.net.*;
 
 public class ChatClient {
