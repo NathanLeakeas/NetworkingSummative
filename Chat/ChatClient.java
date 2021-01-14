@@ -37,11 +37,13 @@ public class ChatClient {
             while(true)
             {
                 
-                Scanner splitter;
+                //Scanner splitter;
 
                 String input = readInput.nextLine();
-                splitter = new Scanner(input);
-                toHost.println("MESSAGE:"+input);
+                //splitter = new Scanner(input);
+                ArrayList<String> message = new ArrayList<>();
+                message.add(input);
+                toHost.writeObject(new Message("MSG",message));
                 toHost.flush();
             }
         }

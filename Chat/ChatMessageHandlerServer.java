@@ -40,10 +40,11 @@ public class ChatMessageHandlerServer implements Runnable
         {
             //if(!fromHost.hasNext()){return;}
             Message message = (Message)fromHost.readObject();
-            for(SocketInfo otherClient : clientList)
+            System.out.println(message.getProtocol()+":"+message.argument.get(0));
+            /*for(SocketInfo otherClient : clientList)
             {
                 
-            }
+            }*/
             if(message.getProtocol().compareTo("MSG")==0)
             {
                 for(SocketInfo otherClient : clientList)
