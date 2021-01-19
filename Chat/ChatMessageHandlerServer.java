@@ -22,14 +22,14 @@ public class ChatMessageHandlerServer implements Runnable
     {
             try
             {
-                fromHost = new ObjectInputStream(s.getInputStream());
-                toHost = new ObjectOutputStream(s.getOutputStream());
+                
                 HandleMessages();
                 
             }
             catch(Exception e)
             {
-
+                System.out.println("Exception:"+e+" at: ");
+                e.printStackTrace();
             }
             
     }
@@ -38,6 +38,8 @@ public class ChatMessageHandlerServer implements Runnable
     {
         while(true)
         {
+            fromHost = new ObjectInputStream(s.getInputStream());
+            toHost = new ObjectOutputStream(s.getOutputStream());
             //if(!fromHost.hasNext()){return;}
             Message message = (Message)fromHost.readObject();
             System.out.println(message.getProtocol()+":"+message.argument.get(0));

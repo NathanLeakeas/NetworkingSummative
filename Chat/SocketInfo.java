@@ -20,7 +20,7 @@ public class SocketInfo {
         return s;
     }
 
-    public String getUser()
+    public String getUsername()
     {
         return uname;
     }
