@@ -9,9 +9,9 @@ public class ChatMessageHandlerServer implements Runnable
 {
     Scanner fromHost;
     PrintWriter toHost;
-    Socket s;
-    List<Socket> clientList;
-    public ChatMessageHandlerServer(Socket sock, List<Socket> sockList)
+    SocketInfo s;
+    List<SocketInfo> clientList;
+    public ChatMessageHandlerServer(SocketInfo sock, List<SocketInfo> sockList)
     {
         s = sock;
         clientList = sockList;
@@ -21,8 +21,8 @@ public class ChatMessageHandlerServer implements Runnable
     {
             try
             {
-                fromHost = new Scanner(s.getInputStream());
-                toHost = new PrintWriter(s.getOutputStream());
+                fromHost = new Scanner(s.getSocket().getInputStream());
+                toHost = new PrintWriter(s.getSocket().getOutputStream());
                 HandleMessages();
                 
             }
@@ -39,17 +39,58 @@ public class ChatMessageHandlerServer implements Runnable
         {
             //if(!fromHost.hasNext()){return;}
             String message = fromHost.nextLine();
-            //System.out.println("message: "+message);
-            for(Socket otherClient : clientList)
+            if(getProtocol(message).compareTo("CHAT")==0)
             {
-                if(otherClient!=s)//prevent sending message to client that sent the message
+                System.out.println(s.getUsername()+":"+stripProtocol(message));
+                for(SocketInfo otherClientInfo : clientList)
                 {
-                    PrintWriter toNewClient = new PrintWriter(otherClient.getOutputStream());
-                    toNewClient.println(""+otherClient.getInetAddress()+":"+message);
-                    toNewClient.flush();
+                    //Socket otherClient = otherClientInfo.getSocket();
+                    if(otherClientInfo!=s)//prevent sending message to client that sent the message
+                    {
+                        PrintWriter toNewClient = new PrintWriter(otherClientInfo.getSocket().getOutputStream());
+                        toNewClient.println(s.getUsername()+":"+stripProtocol(message));
+
+                        toNewClient.flush();
+                    }
                 }
             }
+            else if(getProtocol(message).compareTo("LOGIN")==0)
+            {
+                s.setUsername(stripProtocol(message));
+            }
+            else if(getProtocol(message).compareTo("LOGOUT")==0)
+            {
+                s.getSocket().close();
+            }
+            
         }
+    }
+
+    /**
+     * determines if the message is a LOGIN, CHAT, or LOGOUT protocol
+     */
+    public String getProtocol(String message)//LOGIN, CHAT, LOGOUT
+    {
+        
+        if(message.substring(0,4).toLowerCase().equals("chat"))
+        {
+            return "CHAT";
+        }
+        else if (message.substring(0,5).toLowerCase().equals("login"))
+        {
+            return "LOGIN";
+        }
+        else if (message.substring(0,6).toLowerCase().equals("logout"))
+        {
+            return "LOGOUT";
+        }
+        return " ";
+        
+    }
+
+    public String stripProtocol(String message)
+    {
+        return message.substring(getProtocol(message).length()+1);
     }
 
 }
