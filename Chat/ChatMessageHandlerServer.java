@@ -37,14 +37,12 @@ public class ChatMessageHandlerServer implements Runnable
     {
         while(true)
         {
-            //if(!fromHost.hasNext()){return;}
             String message = fromHost.nextLine();
             if(getProtocol(message).compareTo("CHAT")==0)
             {
                 System.out.println(s.getUsername()+":"+stripProtocol(message));
                 for(SocketInfo otherClientInfo : clientList)
                 {
-                    //Socket otherClient = otherClientInfo.getSocket();
                     if(otherClientInfo!=s)//prevent sending message to client that sent the message
                     {
                         PrintWriter toNewClient = new PrintWriter(otherClientInfo.getSocket().getOutputStream());
