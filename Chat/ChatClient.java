@@ -7,7 +7,7 @@ import java.net.*;
 public class ChatClient {
 
     static final String host = "localhost";
-    static final int port = 5566;
+    static final int port = 5567;
     public static void main(String[] args) throws IOException
     {
         Scanner readInput = new Scanner(System.in);
@@ -21,21 +21,32 @@ public class ChatClient {
         {
             Scanner fromHost = new Scanner(s.getInputStream());
             PrintWriter toHost = new PrintWriter(s.getOutputStream());
-            toHost.print("UNAME:"+username);
+            toHost.println("LOGIN "+username);
             toHost.flush();
             System.out.println("Connected!");
             ChatMessageHandlerClient service = new ChatMessageHandlerClient(s);
             Thread t = new Thread(service);
             t.start();
-            while(true)
+            boolean logOut=false;
+            while(!logOut)
             {
                 
                 Scanner splitter;
 
                 String input = readInput.nextLine();
-                splitter = new Scanner(input);
-                toHost.println("MESSAGE:"+input);
-                toHost.flush();
+                if(input!="!logout")
+                {
+                    toHost.println("CHAT "+input);
+                    toHost.flush();
+                    System.out.println("message sent");
+                }
+                else
+                {
+                    toHost.println("LOGOUT ");
+                    toHost.flush();
+                    logOut=true;
+                }
+                
             }
         }
     }
