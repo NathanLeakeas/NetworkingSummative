@@ -24,4 +24,9 @@ public class SocketInfo {
     {
         return uname;
     }
+
+    public void setUsername(String username)
+    {
+        uname = username;
+    }
 }
