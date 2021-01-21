@@ -19,7 +19,7 @@ public class ChatMessageHandlerClient implements Runnable {
 
             while(true)
             {
-                System.out.println("Other Client: "+fromHost.nextLine());
+                System.out.println(fromHost.nextLine());
             }
         }
         catch(IOException e)
